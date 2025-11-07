@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -207,7 +208,7 @@ export default function SignupPage() {
                 name="userType"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>I am a...</FormLabel>
+                    <FormLabel>I am...</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
@@ -219,10 +220,10 @@ export default function SignupPage() {
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="business">
-                          Business looking for a lawyer
+                          Looking for a lawyer
                         </SelectItem>
                         <SelectItem value="lawyer">
-                          Lawyer offering my services
+                          A lawyer offering my services
                         </SelectItem>
                       </SelectContent>
                     </Select>
