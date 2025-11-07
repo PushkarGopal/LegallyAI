@@ -125,7 +125,7 @@ export default function Home() {
                 key={index}
                 className="flex flex-col items-center p-8 text-center shadow-lg hover:shadow-xl transition-shadow duration-300"
               >
-                <div className="mb-4 rounded-full bg-accent/20 p-4">
+                <div className="mb-4 rounded-full bg-primary/10 p-4">
                   {feature.icon}
                 </div>
                 <h3 className="font-headline text-xl font-semibold">
