@@ -3,7 +3,7 @@ import { Bot, Users, ShieldCheck, Briefcase, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
-const services = [
+const features = [
   {
     icon: <Bot className="h-8 w-8 text-primary" />,
     title: 'AI-Powered Lawyer Matching',
@@ -26,7 +26,7 @@ const services = [
   },
 ];
 
-export default function ServicesPage() {
+export default function FeaturesPage() {
   return (
     <div className="bg-secondary/50">
       <div className="container mx-auto max-w-screen-xl px-4 py-16 sm:py-24">
@@ -35,21 +35,21 @@ export default function ServicesPage() {
             Comprehensive Legal Solutions, Powered by AI
           </h1>
           <p className="mt-6 max-w-2xl mx-auto text-lg text-muted-foreground">
-            We offer a suite of services designed to make finding and working with legal professionals simple, transparent, and efficient.
+            We offer a suite of features designed to make finding and working with legal professionals simple, transparent, and efficient.
           </p>
         </div>
 
         <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-2">
-          {services.map((service, index) => (
+          {features.map((feature, index) => (
             <Card key={index} className="flex flex-col text-center items-center p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
               <div className="mb-5 rounded-full bg-accent/20 p-4">
-                {service.icon}
+                {feature.icon}
               </div>
               <CardHeader className="p-0">
-                <CardTitle className="font-headline text-xl">{service.title}</CardTitle>
+                <CardTitle className="font-headline text-xl">{feature.title}</CardTitle>
               </CardHeader>
               <CardContent className="p-0 mt-2 flex-grow">
-                <p className="text-muted-foreground">{service.description}</p>
+                <p className="text-muted-foreground">{feature.description}</p>
               </CardContent>
             </Card>
           ))}
