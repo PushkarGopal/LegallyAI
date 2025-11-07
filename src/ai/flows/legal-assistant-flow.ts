@@ -52,10 +52,9 @@ async function toWav(
   });
 }
 
-const legalAssistantTextPrompt = `You are LegallyAI, a helpful and knowledgeable AI legal assistant specializing in Indian law.
+const legalAssistantTextPrompt = `You are a helpful and knowledgeable AI assistant.
       A user has a question. Provide a clear, concise, and informative answer.
       If the query is conversational (like "hello"), respond conversationally.
-      If the query is a legal question, provide a helpful answer but ALWAYS include a disclaimer that you are an AI assistant and they should consult a qualified human lawyer for professional advice.
 
       User's query: "`;
 
@@ -71,7 +70,7 @@ const legalAssistantFlow = ai.defineFlow(
     
     // 1. Generate the text response first.
     const textPromise = ai.generate({
-        prompt: `${legalAssistantTextPrompt}${input.query} according to Indian law"`,
+        prompt: `${legalAssistantTextPrompt}${input.query}"`,
     });
 
     // 2. Generate the audio response in parallel.
