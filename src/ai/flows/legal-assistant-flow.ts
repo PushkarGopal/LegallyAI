@@ -53,17 +53,12 @@ async function toWav(
   });
 }
 
-const legalAssistantTextPrompt = ai.definePrompt({
-    name: 'legalAssistantTextPrompt',
-    input: { schema: z.object({ query: z.string() }) },
-    prompt: `You are LegallyAI, a helpful and knowledgeable AI legal assistant specializing in Indian law.
+const legalAssistantTextPrompt = `You are LegallyAI, a helpful and knowledgeable AI legal assistant specializing in Indian law.
       A user has a question. Provide a clear, concise, and informative answer.
       If the query is conversational (like "hello"), respond conversationally.
       If the query is a legal question, provide a helpful answer but ALWAYS include a disclaimer that you are an AI assistant and they should consult a qualified human lawyer for professional advice.
 
-      User's query: "{{query}}"`,
-    model: googleAI.model('gemini-1.5-pro-latest'),
-});
+      User's query: "{{query}}"`;
 
 
 // Define the main flow
@@ -76,7 +71,11 @@ const legalAssistantFlow = ai.defineFlow(
   async (input) => {
     
     // 1. Generate the text response first.
-    const textResponseResult = await legalAssistantTextPrompt(input);
+    const textResponseResult = await ai.generate({
+        prompt: legalAssistantTextPrompt,
+        model: googleAI.model('gemini-1.5-pro-latest'),
+        input,
+    });
     const textResponse = textResponseResult.text;
 
     // 2. Generate the audio response from the text
