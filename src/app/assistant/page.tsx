@@ -2,11 +2,11 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Send, Mic, User, Bot, Loader2, Volume2, Square } from 'lucide-react';
+import { Send, Mic, User, Bot, Loader2, Square } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { legalAssistant } from '@/ai/flows/legal-assistant-flow';
@@ -14,7 +14,6 @@ import { legalAssistant } from '@/ai/flows/legal-assistant-flow';
 interface Message {
   role: 'user' | 'assistant';
   text: string;
-  audioUrl?: string;
 }
 
 // Check for SpeechRecognition API
@@ -28,7 +27,6 @@ export default function AssistantPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -54,14 +52,9 @@ export default function AssistantPage() {
       const assistantMessage: Message = {
         role: 'assistant',
         text: result.textResponse,
-        audioUrl: result.audioResponse,
       };
       setMessages(prev => [...prev, assistantMessage]);
 
-      if (result.audioResponse && audioRef.current) {
-        audioRef.current.src = result.audioResponse;
-        audioRef.current.play();
-      }
     } catch (error) {
       console.error('Error with legal assistant:', error);
       const errorMessage: Message = {
@@ -134,18 +127,11 @@ export default function AssistantPage() {
     }
   };
 
-  const playAudio = (audioUrl: string) => {
-    if (audioRef.current) {
-      audioRef.current.src = audioUrl;
-      audioRef.current.play();
-    }
-  }
-
   return (
     <div className="container mx-auto max-w-screen-md px-4 py-12 flex flex-col h-[calc(100vh-theme(spacing.14)-theme(spacing.16))]">
       <div className="text-center mb-8">
-        <h1 className="font-headline text-4xl font-bold">AI Legal Assistant</h1>
-        <p className="text-muted-foreground text-lg mt-2">Ask me anything about Indian law. You can type or use your voice.</p>
+        <h1 className="font-headline text-4xl font-bold">AI Assistant</h1>
+        <p className="text-muted-foreground text-lg mt-2">Ask me anything. You can type or use your voice.</p>
       </div>
 
       <Card className="flex-grow flex flex-col">
@@ -172,11 +158,6 @@ export default function AssistantPage() {
                             : 'bg-muted'
                     )}>
                         <p className="whitespace-pre-wrap text-sm">{message.text}</p>
-                        {message.role === 'assistant' && message.audioUrl && (
-                            <Button variant="ghost" size="icon" className="h-auto w-auto p-1 mt-2" onClick={() => playAudio(message.audioUrl!)}>
-                                <Volume2 className="h-4 w-4" />
-                            </Button>
-                        )}
                     </div>
                     {message.role === 'user' && (
                         <Avatar className="h-10 w-10 border">
@@ -210,7 +191,7 @@ export default function AssistantPage() {
                 <Input
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder="Type your legal question..."
+                    placeholder="Type your question..."
                     disabled={isLoading || isRecording}
                     className="flex-grow"
                 />
@@ -226,7 +207,6 @@ export default function AssistantPage() {
             </div>
         </CardContent>
       </Card>
-      <audio ref={audioRef} className="hidden" />
     </div>
   );
 }
