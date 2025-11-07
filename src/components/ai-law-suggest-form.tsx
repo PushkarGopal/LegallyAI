@@ -117,7 +117,7 @@ export default function AiLawSuggestForm() {
               <div className="space-y-4 mb-6">
                 {result.suggestions.map((suggestion, index) => (
                   <div key={index}>
-                    <div className="font-semibold text-primary">{suggestion.law}{suggestion.section && `, Section ${suggestion.section}`}</div>
+                    <div className="font-semibold text-foreground">{suggestion.law}{suggestion.section && `, Section ${suggestion.section}`}</div>
                     <p className="text-sm text-muted-foreground">{suggestion.explanation}</p>
                     {index < result.suggestions.length - 1 && <Separator className="mt-4" />}
                   </div>
