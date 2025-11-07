@@ -1,4 +1,3 @@
-
 'use server';
 /**
  * @fileOverview A conversational AI assistant for legal queries.
@@ -77,8 +76,8 @@ const legalAssistantFlow = ai.defineFlow(
     });
     const textResponse = textResponseResult.text;
 
-    // 2. Generate the audio response from the text
-    const { media } = await ai.generate({
+    // 2. Generate the audio response in parallel.
+    const audioPromise = ai.generate({
       model: googleAI.model('gemini-2.5-flash-preview-tts'),
       prompt: textResponse,
       config: {
@@ -89,21 +88,24 @@ const legalAssistantFlow = ai.defineFlow(
               },
           },
       },
+    }).then(async ({ media }) => {
+      if (!media) {
+        throw new Error('Text-to-speech audio generation failed.');
+      }
+      const pcmBuffer = Buffer.from(
+        media.url.substring(media.url.indexOf(',') + 1),
+        'base64'
+      );
+      const wavBase64 = await toWav(pcmBuffer);
+      return `data:audio/wav;base64,${wavBase64}`;
     });
 
-    if (!media) {
-      throw new Error('Text-to-speech audio generation failed.');
-    }
-
-    const pcmBuffer = Buffer.from(
-      media.url.substring(media.url.indexOf(',') + 1),
-      'base64'
-    );
-    const wavBase64 = await toWav(pcmBuffer);
+    // Await the audio promise to get the final result.
+    const audioResponse = await audioPromise;
 
     return {
       textResponse,
-      audioResponse: `data:audio/wav;base64,${wavBase64}`,
+      audioResponse,
     };
   }
 );
