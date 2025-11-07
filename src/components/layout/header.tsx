@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Gavel, LogOut, User as UserIcon, Settings } from 'lucide-react';
+import { Gavel, LogOut, User as UserIcon, Settings, Mic } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useUser, useAuth } from '@/firebase';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -34,6 +34,10 @@ export function Header() {
           <span className="font-headline text-xl font-bold text-foreground">LegallyAI</span>
         </Link>
         <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
+          <Link href="/assistant" className="text-muted-foreground transition-colors hover:text-primary flex items-center">
+            <Mic className="mr-2 h-4 w-4" />
+            AI Assistant
+          </Link>
           <Link href="/#find-lawyer" className="text-muted-foreground transition-colors hover:text-primary">
             Find a Lawyer
           </Link>
