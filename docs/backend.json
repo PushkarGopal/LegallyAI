@@ -1,0 +1,403 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user of the LegallyAI platform.  Can be either a business user seeking legal services or a legal professional.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user."
+        },
+        "userType": {
+          "type": "string",
+          "description": "Indicates the type of user (e.g., 'business', 'lawyer', 'lawFirm')."
+        },
+        "firstName": {
+          "type": "string",
+          "description": "User's first name."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "User's last name."
+        },
+        "email": {
+          "type": "string",
+          "description": "User's email address.",
+          "format": "email"
+        },
+        "phone": {
+          "type": "string",
+          "description": "User's phone number."
+        },
+        "location": {
+          "type": "string",
+          "description": "User's general location (e.g., city, state)."
+        },
+        "profileId": {
+          "type": "string",
+          "description": "Reference to UserProfile. (Relationship: User 1:1 UserProfile). Holds the ID of the user profile."
+        }
+      },
+      "required": [
+        "id",
+        "userType",
+        "firstName",
+        "lastName",
+        "email",
+        "profileId"
+      ]
+    },
+    "UserProfile": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserProfile",
+      "type": "object",
+      "description": "Represents the detailed profile information for a user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user profile."
+        },
+        "bio": {
+          "type": "string",
+          "description": "A short biography or description of the user."
+        },
+        "experience": {
+          "type": "string",
+          "description": "Description of the user's experience."
+        },
+        "areasOfExpertise": {
+          "type": "array",
+          "description": "List of the user's areas of legal expertise.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "certifications": {
+          "type": "array",
+          "description": "List of certifications held by the user.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "websiteUrl": {
+          "type": "string",
+          "description": "URL of the user's website.",
+          "format": "uri"
+        },
+        "linkedInUrl": {
+          "type": "string",
+          "description": "URL of the user's LinkedIn profile.",
+          "format": "uri"
+        },
+        "hourlyRate": {
+          "type": "number",
+          "description": "The hourly rate charged by the lawyer."
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "LawFirm": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "LawFirm",
+      "type": "object",
+      "description": "Represents a law firm on the LegallyAI platform.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the law firm."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the law firm."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the law firm and its services."
+        },
+        "location": {
+          "type": "string",
+          "description": "Location of the law firm."
+        },
+        "contactEmail": {
+          "type": "string",
+          "description": "Contact email address for the law firm.",
+          "format": "email"
+        },
+        "contactPhone": {
+          "type": "string",
+          "description": "Contact phone number for the law firm."
+        },
+        "websiteUrl": {
+          "type": "string",
+          "description": "URL of the law firm's website.",
+          "format": "uri"
+        },
+        "lawyerIds": {
+          "type": "array",
+          "description": "References to Lawyers. (Relationship: LawFirm 1:N Lawyer).  A list of IDs of lawyers associated with the law firm.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "location",
+        "contactEmail"
+      ]
+    },
+    "Lawyer": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Lawyer",
+      "type": "object",
+      "description": "Represents a lawyer on the LegallyAI platform.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the lawyer."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: Lawyer 1:1 User). Reference to the user account associated with the lawyer."
+        },
+        "lawFirmId": {
+          "type": "string",
+          "description": "Reference to LawFirm. (Relationship: LawFirm 1:N Lawyer). ID of the law firm the lawyer belongs to (if any)."
+        },
+        "licenseNumber": {
+          "type": "string",
+          "description": "Lawyer's license number."
+        },
+        "yearsOfExperience": {
+          "type": "number",
+          "description": "Number of years of experience as a lawyer."
+        },
+        "areasOfExpertise": {
+          "type": "array",
+          "description": "List of areas of legal expertise.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "licenseNumber"
+      ]
+    },
+    "Consultation": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Consultation",
+      "type": "object",
+      "description": "Represents a consultation between a user and a lawyer.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the consultation."
+        },
+        "user_id": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N Consultation). ID of the user initiating the consultation."
+        },
+        "lawyer_id": {
+          "type": "string",
+          "description": "Reference to Lawyer. (Relationship: Lawyer 1:N Consultation). ID of the lawyer participating in the consultation."
+        },
+        "startTime": {
+          "type": "string",
+          "description": "Date and time the consultation started.",
+          "format": "date-time"
+        },
+        "endTime": {
+          "type": "string",
+          "description": "Date and time the consultation ended.",
+          "format": "date-time"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Notes or summary of the consultation."
+        }
+      },
+      "required": [
+        "id",
+        "user_id",
+        "lawyer_id",
+        "startTime"
+      ]
+    },
+    "Engagement": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Engagement",
+      "type": "object",
+      "description": "Represents a formal engagement between a user and a lawyer.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the engagement."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N Engagement). ID of the user engaging the lawyer."
+        },
+        "lawyerId": {
+          "type": "string",
+          "description": "Reference to Lawyer. (Relationship: Lawyer 1:N Engagement). ID of the lawyer being engaged."
+        },
+        "startDate": {
+          "type": "string",
+          "description": "Date the engagement started.",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": "string",
+          "description": "Date the engagement ended (if applicable).",
+          "format": "date-time"
+        },
+        "terms": {
+          "type": "string",
+          "description": "Terms and conditions of the engagement."
+        },
+        "feeAgreement": {
+          "type": "string",
+          "description": "Description of the fee agreement."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "lawyerId",
+        "startDate",
+        "terms"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user data. Path-based ownership is enforced via the `userId` parameter.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/userProfiles/{profileId}",
+        "definition": {
+          "entityName": "UserProfile",
+          "schema": {
+            "$ref": "#/backend/entities/UserProfile"
+          },
+          "description": "Stores user profile data. Separate from user data to allow potentially different security rules in the future.",
+          "params": [
+            {
+              "name": "profileId",
+              "description": "The unique identifier of the user profile."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/lawFirms/{lawFirmId}",
+        "definition": {
+          "entityName": "LawFirm",
+          "schema": {
+            "$ref": "#/backend/entities/LawFirm"
+          },
+          "description": "Stores law firm data.",
+          "params": [
+            {
+              "name": "lawFirmId",
+              "description": "The unique identifier of the law firm."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/lawyers/{lawyerId}",
+        "definition": {
+          "entityName": "Lawyer",
+          "schema": {
+            "$ref": "#/backend/entities/Lawyer"
+          },
+          "description": "Stores lawyer data.",
+          "params": [
+            {
+              "name": "lawyerId",
+              "description": "The unique identifier of the lawyer."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/consultations/{consultationId}",
+        "definition": {
+          "entityName": "Consultation",
+          "schema": {
+            "$ref": "#/backend/entities/Consultation"
+          },
+          "description": "Stores consultation data.",
+          "params": [
+            {
+              "name": "consultationId",
+              "description": "The unique identifier of the consultation."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/engagements/{engagementId}",
+        "definition": {
+          "entityName": "Engagement",
+          "schema": {
+            "$ref": "#/backend/entities/Engagement"
+          },
+          "description": "Stores engagement data.",
+          "params": [
+            {
+              "name": "engagementId",
+              "description": "The unique identifier of the engagement."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/roles_admin/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores admin user ids. Existence of the document dictates admin access.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore data structure is designed to support the LegallyAI platform, focusing on secure access, scalability, and maintainability. The structure leverages path-based ownership for user-specific data and membership maps for collaborative entities. Authorization Independence is achieved by denormalizing relevant authorization data (e.g., user roles or membership status) within documents, thus avoiding the need for `get()` calls in security rules. Structural Segregation is applied to ensure each collection has a homogeneous security posture.\n\n*   **Users:** User data is stored under `/users/{userId}`.  This enforces path-based ownership. The `profileId` is stored directly in the User document to avoid an additional read in security rules when accessing profile data.\n*   **User Profiles:**  User profiles are stored in a separate collection `/userProfiles/{profileId}`.  While profiles are 1:1 with users, storing them separately allows for different security rules if needed in the future (e.g., allowing a user to make their profile public).\n*   **Law Firms:** Law firm data is stored under `/lawFirms/{lawFirmId}`. The `lawyerIds` array stores references to lawyers within the law firm.\n*   **Lawyers:** Lawyer data is stored under `/lawyers/{lawyerId}`. The lawyer document stores references to both the associated `userId` and `lawFirmId`.\n*   **Consultations:** Consultations are stored under `/consultations/{consultationId}`. The `user_id` and `lawyer_id` fields allow for querying consultations associated with a user or lawyer.\n*   **Engagements:** Engagements are stored under `/engagements/{engagementId}`. The `userId` and `lawyerId` fields allow for querying engagements associated with a user or lawyer.\n*   **Global Roles (DBAC):** The absence of custom claims dictates leveraging DBAC. A roles collection will determine admin access. This collection will include documents with the user id as document id. Example: /roles_admin/{userId}. If the document exists, the user is an admin."
+  }
+}
