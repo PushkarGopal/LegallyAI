@@ -39,6 +39,9 @@ export function Header() {
           <Link href="/#for-lawyers" className="text-muted-foreground transition-colors hover:text-primary">
             For Lawyers
           </Link>
+          <Link href="/services" className="text-muted-foreground transition-colors hover:text-primary">
+            Services
+          </Link>
         </nav>
         <div className="ml-auto flex items-center space-x-4">
           {isUserLoading ? (
@@ -61,9 +64,11 @@ export function Header() {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <UserIcon className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
+                <DropdownMenuItem asChild>
+                  <Link href="/profile">
+                    <UserIcon className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Settings className="mr-2 h-4 w-4" />

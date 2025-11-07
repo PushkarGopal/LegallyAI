@@ -13,6 +13,17 @@ export type Lawyer = DocumentData & {
   userId: string; // Reference to the User document
 };
 
+export type UserProfile = {
+  id: string;
+  bio: string;
+  experience: string;
+  areasOfExpertise: string[];
+  certifications: string[];
+  websiteUrl: string;
+  linkedInUrl: string;
+  hourlyRate: number;
+};
+
 export const expertises = [
   "Corporate & Commercial Law",
   "Litigation & Dispute Resolution",
