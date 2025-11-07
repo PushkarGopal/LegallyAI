@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Search } from 'lucide-react';
@@ -37,21 +38,21 @@ export function SearchBar({
             onChange={(e) => onSearchTermChange(e.target.value)}
           />
         </div>
-        <Select value={selectedExpertise} onValueChange={onExpertiseChange}>
+        <Select value={selectedExpertise} onValueChange={(value) => onExpertiseChange(value === 'all' ? '' : value)}>
           <SelectTrigger>
             <SelectValue placeholder="Filter by Expertise" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Expertises</SelectItem>
+            <SelectItem value="all">All Expertises</SelectItem>
             {expertises.map(exp => <SelectItem key={exp} value={exp}>{exp}</SelectItem>)}
           </SelectContent>
         </Select>
-        <Select value={selectedLocation} onValueChange={onLocationChange}>
+        <Select value={selectedLocation} onValueChange={(value) => onLocationChange(value === 'all' ? '' : value)}>
           <SelectTrigger>
             <SelectValue placeholder="Filter by Location" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Locations</SelectItem>
+            <SelectItem value="all">All Locations</SelectItem>
             {locations.map(loc => <SelectItem key={loc} value={loc}>{loc}</SelectItem>)}
           </SelectContent>
         </Select>
@@ -59,3 +60,4 @@ export function SearchBar({
     </Card>
   );
 }
+
