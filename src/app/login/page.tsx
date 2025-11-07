@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInAnonymously } from 'firebase/auth';
 import { useAuth } from '@/firebase';
 
 import { Button } from '@/components/ui/button';
@@ -27,7 +27,8 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, User } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address.' }),
@@ -38,6 +39,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
+  const [isAnonymousLoading, setIsAnonymousLoading] = useState(false);
   const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
@@ -71,6 +73,27 @@ export default function LoginPage() {
       });
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function handleAnonymousSignIn() {
+    setIsAnonymousLoading(true);
+    try {
+      await signInAnonymously(auth);
+      toast({
+        title: 'Logged In Anonymously',
+        description: 'You are signed in as a guest user.',
+      });
+      router.push('/');
+    } catch (error: any) {
+      console.error('Anonymous Sign-In Error:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Anonymous Login Failed',
+        description: 'Could not sign you in anonymously. Please try again.',
+      });
+    } finally {
+      setIsAnonymousLoading(false);
     }
   }
 
@@ -116,7 +139,7 @@ export default function LoginPage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button type="submit" className="w-full" disabled={isLoading || isAnonymousLoading}>
                 {isLoading && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
@@ -124,6 +147,32 @@ export default function LoginPage() {
               </Button>
             </form>
           </Form>
+
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <Separator />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                Or continue with
+              </span>
+            </div>
+          </div>
+          
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={handleAnonymousSignIn}
+            disabled={isLoading || isAnonymousLoading}
+          >
+            {isAnonymousLoading ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <User className="mr-2 h-4 w-4" />
+            )}
+            Sign in Anonymously
+          </Button>
+
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{' '}
             <Link href="/signup" className="underline">
