@@ -10,6 +10,7 @@ export type Lawyer = DocumentData & {
   reviews: number;
   avatarUrl: string;
   bio: string;
+  userId: string; // Reference to the User document
 };
 
 export const expertises = [

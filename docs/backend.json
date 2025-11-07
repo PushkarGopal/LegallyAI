@@ -159,36 +159,60 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the lawyer."
+          "description": "Unique identifier for the lawyer (should match the user ID)."
         },
         "userId": {
           "type": "string",
           "description": "Reference to User. (Relationship: Lawyer 1:1 User). Reference to the user account associated with the lawyer."
         },
-        "lawFirmId": {
+        "name": {
           "type": "string",
-          "description": "Reference to LawFirm. (Relationship: LawFirm 1:N Lawyer). ID of the law firm the lawyer belongs to (if any)."
+          "description": "Full name of the lawyer."
         },
-        "licenseNumber": {
+        "firm": {
           "type": "string",
-          "description": "Lawyer's license number."
+          "description": "The law firm the lawyer works for."
         },
-        "yearsOfExperience": {
-          "type": "number",
-          "description": "Number of years of experience as a lawyer."
-        },
-        "areasOfExpertise": {
+        "expertise": {
           "type": "array",
-          "description": "List of areas of legal expertise.",
+          "description": "List of the lawyer's areas of legal expertise.",
           "items": {
             "type": "string"
           }
+        },
+        "location": {
+          "type": "string",
+          "description": "The lawyer's primary location."
+        },
+        "rating": {
+          "type": "number",
+          "description": "The lawyer's average user rating."
+        },
+        "reviews": {
+          "type": "number",
+          "description": "The number of reviews the lawyer has received."
+        },
+        "avatarUrl": {
+          "type": "string",
+          "description": "URL for the lawyer's profile picture.",
+          "format": "uri"
+        },
+        "bio": {
+          "type": "string",
+          "description": "A short biography of the lawyer."
         }
       },
       "required": [
         "id",
         "userId",
-        "licenseNumber"
+        "name",
+        "firm",
+        "expertise",
+        "location",
+        "rating",
+        "reviews",
+        "avatarUrl",
+        "bio"
       ]
     },
     "Consultation": {
@@ -340,7 +364,7 @@
           "schema": {
             "$ref": "#/backend/entities/Lawyer"
           },
-          "description": "Stores lawyer data.",
+          "description": "Stores lawyer data. These documents are publicly readable to allow for searching and recommendations.",
           "params": [
             {
               "name": "lawyerId",
@@ -398,6 +422,6 @@
         }
       }
     ],
-    "reasoning": "The Firestore data structure is designed to support the LegallyAI platform, focusing on secure access, scalability, and maintainability. The structure leverages path-based ownership for user-specific data and membership maps for collaborative entities. Authorization Independence is achieved by denormalizing relevant authorization data (e.g., user roles or membership status) within documents, thus avoiding the need for `get()` calls in security rules. Structural Segregation is applied to ensure each collection has a homogeneous security posture.\n\n*   **Users:** User data is stored under `/users/{userId}`.  This enforces path-based ownership. The `profileId` is stored directly in the User document to avoid an additional read in security rules when accessing profile data.\n*   **User Profiles:**  User profiles are stored in a separate collection `/userProfiles/{profileId}`.  While profiles are 1:1 with users, storing them separately allows for different security rules if needed in the future (e.g., allowing a user to make their profile public).\n*   **Law Firms:** Law firm data is stored under `/lawFirms/{lawFirmId}`. The `lawyerIds` array stores references to lawyers within the law firm.\n*   **Lawyers:** Lawyer data is stored under `/lawyers/{lawyerId}`. The lawyer document stores references to both the associated `userId` and `lawFirmId`.\n*   **Consultations:** Consultations are stored under `/consultations/{consultationId}`. The `user_id` and `lawyer_id` fields allow for querying consultations associated with a user or lawyer.\n*   **Engagements:** Engagements are stored under `/engagements/{engagementId}`. The `userId` and `lawyerId` fields allow for querying engagements associated with a user or lawyer.\n*   **Global Roles (DBAC):** The absence of custom claims dictates leveraging DBAC. A roles collection will determine admin access. This collection will include documents with the user id as document id. Example: /roles_admin/{userId}. If the document exists, the user is an admin."
+    "reasoning": "The Firestore data structure is designed to support the LegallyAI platform, focusing on secure access, scalability, and maintainability. The structure leverages path-based ownership for user-specific data and membership maps for collaborative entities. Authorization Independence is achieved by denormalizing relevant authorization data (e.g., user roles or membership status) within documents, thus avoiding the need for `get()` calls in security rules. Structural Segregation is applied to ensure each collection has a homogeneous security posture.\n\n*   **Users:** User data is stored under `/users/{userId}`.  This enforces path-based ownership. The `profileId` is stored directly in the User document to avoid an additional read in security rules when accessing profile data.\n*   **User Profiles:**  User profiles are stored in a separate collection `/userProfiles/{profileId}`.  While profiles are 1:1 with users, storing them separately allows for different security rules if needed in the future (e.g., allowing a user to make their profile public).\n*   **Law Firms:** Law firm data is stored under `/lawFirms/{lawFirmId}`. The `lawyerIds` array stores references to lawyers within the law firm.\n*   **Lawyers:** Lawyer data is now publicly readable and stored under `/lawyers/{lawyerId}` to allow the AI recommendation tool to query the data. It contains denormalized information for easy access.\n*   **Consultations:** Consultations are stored under `/consultations/{consultationId}`. The `user_id` and `lawyer_id` fields allow for querying consultations associated with a user or lawyer.\n*   **Engagements:** Engagements are stored under `/engagements/{engagementId}`. The `userId` and `lawyerId` fields allow for querying engagements associated with a user or lawyer.\n*   **Global Roles (DBAC):** The absence of custom claims dictates leveraging DBAC. A roles collection will determine admin access. This collection will include documents with the user id as document id. Example: /roles_admin/{userId}. If the document exists, the user is an admin."
   }
 }
