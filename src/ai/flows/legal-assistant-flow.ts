@@ -13,13 +13,13 @@ import { googleAI } from '@genkit-ai/google-genai';
 
 // Input Schema
 const LegalAssistantInputSchema = z.object({
-  query: z.string().describe('The user\'s legal query or question.'),
+  query: z.string().describe("The user's legal query or question."),
 });
 export type LegalAssistantInput = z.infer<typeof LegalAssistantInputSchema>;
 
 // Output Schema
 const LegalAssistantOutputSchema = z.object({
-  textResponse: z.string().describe('The AI\'s text-based answer to the user\'s query.'),
+  textResponse: z.string().describe("The AI's text-based answer to the user's query."),
   audioResponse: z.string().describe("A data URI of the AI's spoken response in WAV format."),
 });
 export type LegalAssistantOutput = z.infer<typeof LegalAssistantOutputSchema>;
@@ -53,6 +53,33 @@ async function toWav(
   });
 }
 
+const legalAssistantPrompt = ai.definePrompt({
+    name: 'legalAssistantPrompt',
+    input: { schema: z.object({ query: z.string() }) },
+    // Although we expect multimodal output, we define the Zod schema for the text part only,
+    // as Genkit's output schema validation primarily works with the text/JSON part of the response.
+    output: { schema: z.object({ textResponse: z.string() }) },
+    prompt: `You are LegallyAI, a helpful and knowledgeable AI legal assistant specializing in Indian law.
+      A user has a question. Provide a clear, concise, and informative answer.
+      If the query is conversational (like "hello"), respond conversationally.
+      If the query is a legal question, provide a helpful answer but ALWAYS include a disclaimer that you are an AI assistant and they should consult a qualified human lawyer for professional advice.
+
+      User's query: "{{query}}"`,
+    
+    // Configure the prompt to generate both text and audio
+    config: {
+        model: googleAI.model('gemini-2.5-flash-preview'),
+        temperature: 0.5,
+        responseModalities: ['TEXT', 'AUDIO'],
+        speechConfig: {
+            voiceConfig: {
+                prebuiltVoiceConfig: { voiceName: 'Algenib' },
+            },
+        },
+    },
+});
+
+
 // Define the main flow
 const legalAssistantFlow = ai.defineFlow(
   {
@@ -61,34 +88,11 @@ const legalAssistantFlow = ai.defineFlow(
     outputSchema: LegalAssistantOutputSchema,
   },
   async (input) => {
-    // 1. Generate the text response
-    const llmResponse = await ai.generate({
-      prompt: `You are LegallyAI, a helpful and knowledgeable AI legal assistant specializing in Indian law.
-      A user has a question. Provide a clear, concise, and informative answer.
-      If the query is conversational (like "hello"), respond conversationally.
-      If the query is a legal question, provide a helpful answer but ALWAYS include a disclaimer that you are an AI assistant and they should consult a qualified human lawyer for professional advice.
+    
+    const response = await legalAssistantPrompt(input);
 
-      User's query: "${input.query}"`,
-      model: 'googleai/gemini-2.5-flash',
-      config: {
-        temperature: 0.5,
-      }
-    });
-    const textResponse = llmResponse.text;
-
-    // 2. Generate the audio response from the text
-    const { media } = await ai.generate({
-      model: googleAI.model('gemini-2.5-flash-preview-tts'),
-      prompt: textResponse,
-      config: {
-        responseModalities: ['AUDIO'],
-        speechConfig: {
-          voiceConfig: {
-            prebuiltVoiceConfig: { voiceName: 'Algenib' },
-          },
-        },
-      },
-    });
+    const textResponse = response.text;
+    const media = response.media;
 
     if (!media) {
       throw new Error('Text-to-speech audio generation failed.');
