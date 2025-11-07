@@ -9,8 +9,8 @@ export function Footer() {
         <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
           <div className="flex flex-col items-center md:items-start">
             <Link href="/" className="flex items-center space-x-2">
-              <Gavel className="h-6 w-6 text-primary" />
-              <span className="font-headline text-xl font-bold text-primary">LegallyAI</span>
+              <Gavel className="h-6 w-6 text-foreground" />
+              <span className="font-headline text-xl font-bold text-foreground">LegallyAI</span>
             </Link>
             <p className="mt-2 text-sm text-muted-foreground">The future of legal services is here.</p>
           </div>
