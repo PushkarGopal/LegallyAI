@@ -77,7 +77,7 @@ export default function Home() {
       <section className="relative w-full bg-secondary py-24 md:py-32">
         <div className="container mx-auto grid max-w-screen-2xl grid-cols-1 items-center gap-12 px-4 md:grid-cols-2">
           <div className="flex flex-col items-start space-y-6">
-            <h1 className="font-headline text-4xl font-bold tracking-tighter text-primary md:text-5xl lg:text-6xl">
+            <h1 className="font-headline text-4xl font-bold tracking-tighter md:text-5xl lg:text-6xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               Smarter Legal Solutions, Simplified.
             </h1>
             <p className="max-w-[600px] text-lg text-muted-foreground">
