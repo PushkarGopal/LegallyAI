@@ -53,30 +53,16 @@ async function toWav(
   });
 }
 
-const legalAssistantPrompt = ai.definePrompt({
-    name: 'legalAssistantPrompt',
+const legalAssistantTextPrompt = ai.definePrompt({
+    name: 'legalAssistantTextPrompt',
     input: { schema: z.object({ query: z.string() }) },
-    // Although we expect multimodal output, we define the Zod schema for the text part only,
-    // as Genkit's output schema validation primarily works with the text/JSON part of the response.
-    output: { schema: z.object({ textResponse: z.string() }) },
     prompt: `You are LegallyAI, a helpful and knowledgeable AI legal assistant specializing in Indian law.
       A user has a question. Provide a clear, concise, and informative answer.
       If the query is conversational (like "hello"), respond conversationally.
       If the query is a legal question, provide a helpful answer but ALWAYS include a disclaimer that you are an AI assistant and they should consult a qualified human lawyer for professional advice.
 
       User's query: "{{query}}"`,
-    
-    model: googleAI.model('gemini-2.5-flash-preview'),
-    
-    // Configure the prompt to generate both text and audio
-    config: {
-        responseModalities: ['TEXT', 'AUDIO'],
-        speechConfig: {
-            voiceConfig: {
-                prebuiltVoiceConfig: { voiceName: 'Algenib' },
-            },
-        },
-    },
+    model: googleAI.model('gemini-pro'),
 });
 
 
@@ -89,10 +75,23 @@ const legalAssistantFlow = ai.defineFlow(
   },
   async (input) => {
     
-    const response = await legalAssistantPrompt(input);
+    // 1. Generate the text response first.
+    const textResponseResult = await legalAssistantTextPrompt(input);
+    const textResponse = textResponseResult.text;
 
-    const textResponse = response.text;
-    const media = response.media;
+    // 2. Generate the audio response from the text
+    const { media } = await ai.generate({
+      model: googleAI.model('gemini-2.5-flash-preview-tts'),
+      prompt: textResponse,
+      config: {
+          responseModalities: ['AUDIO'],
+          speechConfig: {
+              voiceConfig: {
+                  prebuiltVoiceConfig: { voiceName: 'Algenib' },
+              },
+          },
+      },
+    });
 
     if (!media) {
       throw new Error('Text-to-speech audio generation failed.');
