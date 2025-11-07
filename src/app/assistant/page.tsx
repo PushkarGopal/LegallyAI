@@ -135,7 +135,7 @@ export default function AssistantPage() {
       </div>
 
       <Card className="flex-grow flex flex-col overflow-hidden">
-        <CardContent className="flex-grow p-0 flex flex-col">
+        <CardContent className="flex-grow p-0 flex flex-col min-h-0">
             <ScrollArea className="flex-grow p-6" viewportRef={scrollViewportRef}>
                 <div className="space-y-6">
                 {messages.map((message, index) => (
