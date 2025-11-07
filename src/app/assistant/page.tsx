@@ -166,12 +166,12 @@ export default function AssistantPage() {
                         </Avatar>
                     )}
                     <div className={cn(
-                        'max-w-md rounded-lg p-3 text-sm',
+                        'max-w-md rounded-lg p-3',
                         message.role === 'user' 
                             ? 'bg-primary text-primary-foreground'
                             : 'bg-muted'
                     )}>
-                        <p className="whitespace-pre-wrap">{message.text}</p>
+                        <p className="whitespace-pre-wrap text-sm">{message.text}</p>
                         {message.role === 'assistant' && message.audioUrl && (
                             <Button variant="ghost" size="icon" className="h-auto w-auto p-1 mt-2" onClick={() => playAudio(message.audioUrl!)}>
                                 <Volume2 className="h-4 w-4" />
