@@ -62,7 +62,7 @@ const legalAssistantTextPrompt = ai.definePrompt({
       If the query is a legal question, provide a helpful answer but ALWAYS include a disclaimer that you are an AI assistant and they should consult a qualified human lawyer for professional advice.
 
       User's query: "{{query}}"`,
-    model: googleAI.model('gemini-1.5-flash-latest'),
+    model: googleAI.model('gemini-1.5-pro-latest'),
 });
 
 
