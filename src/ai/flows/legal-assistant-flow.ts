@@ -57,7 +57,7 @@ const legalAssistantTextPrompt = `You are LegallyAI, a helpful and knowledgeable
       If the query is conversational (like "hello"), respond conversationally.
       If the query is a legal question, provide a helpful answer but ALWAYS include a disclaimer that you are an AI assistant and they should consult a qualified human lawyer for professional advice.
 
-      User's query: "{{query}}"`;
+      User's query: "`;
 
 
 // Define the main flow
@@ -70,26 +70,26 @@ const legalAssistantFlow = ai.defineFlow(
   async (input) => {
     
     // 1. Generate the text response first.
-    const textResponseResult = await ai.generate({
-        prompt: legalAssistantTextPrompt,
-        input,
+    const textPromise = ai.generate({
+        prompt: `${legalAssistantTextPrompt}${input.query}"`,
     });
-    const textResponse = textResponseResult.text;
 
     // 2. Generate the audio response in parallel.
-    const audioPromise = ai.generate({
-      model: googleAI.model('gemini-2.5-flash-preview-tts'),
-      prompt: textResponse,
-      config: {
-          responseModalities: ['AUDIO'],
-          speechConfig: {
-              voiceConfig: {
-                  prebuiltVoiceConfig: { voiceName: 'Algenib' },
-              },
-          },
-      },
-    }).then(async ({ media }) => {
-      if (!media) {
+    const audioPromise = textPromise.then(async (textResponseResult) => {
+      const textResponse = textResponseResult.text;
+      const { media } = await ai.generate({
+        model: googleAI.model('gemini-2.5-flash-preview-tts'),
+        prompt: textResponse,
+        config: {
+            responseModalities: ['AUDIO'],
+            speechConfig: {
+                voiceConfig: {
+                    prebuiltVoiceConfig: { voiceName: 'Algenib' },
+                },
+            },
+        },
+      });
+       if (!media) {
         throw new Error('Text-to-speech audio generation failed.');
       }
       const pcmBuffer = Buffer.from(
@@ -100,11 +100,11 @@ const legalAssistantFlow = ai.defineFlow(
       return `data:audio/wav;base64,${wavBase64}`;
     });
 
-    // Await the audio promise to get the final result.
-    const audioResponse = await audioPromise;
+    // Await both promises
+    const [textResult, audioResponse] = await Promise.all([textPromise, audioPromise]);
 
     return {
-      textResponse,
+      textResponse: textResult.text,
       audioResponse,
     };
   }
