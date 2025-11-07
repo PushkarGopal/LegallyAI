@@ -128,13 +128,13 @@ export default function AssistantPage() {
   };
 
   return (
-    <div className="container mx-auto max-w-screen-md px-4 py-12 flex flex-col h-[calc(100vh-theme(spacing.14)-theme(spacing.16))]">
+    <div className="container mx-auto max-w-screen-md px-4 py-12 flex flex-col h-[calc(100vh-theme(spacing.14)-theme(spacing.12))]">
       <div className="text-center mb-8">
         <h1 className="font-headline text-4xl font-bold">AI Assistant</h1>
         <p className="text-muted-foreground text-lg mt-2">Ask me anything. You can type or use your voice.</p>
       </div>
 
-      <Card className="flex-grow flex flex-col">
+      <Card className="flex-grow flex flex-col overflow-hidden">
         <CardContent className="flex-grow p-0 flex flex-col">
             <ScrollArea className="flex-grow p-6" ref={scrollAreaRef}>
                 <div className="space-y-6">
