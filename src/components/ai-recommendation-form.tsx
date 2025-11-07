@@ -89,7 +89,7 @@ export default function AiRecommendationForm() {
                   <FormItem>
                     <FormLabel>Legal Needs</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="e.g., 'I need to draft a partnership agreement for my tech startup.'" {...field} rows={4} />
+                      <Textarea placeholder="e.g., 'I need help with a property dispute in Mumbai.'" {...field} rows={4} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

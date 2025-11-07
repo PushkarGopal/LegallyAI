@@ -14,14 +14,16 @@ export type Lawyer = DocumentData & {
 };
 
 export const expertises = [
-  "Corporate Law",
+  "Corporate & Commercial Law",
+  "Litigation & Dispute Resolution",
   "Intellectual Property",
   "Family Law",
   "Criminal Law",
-  "Real Estate Law",
-  "Tax Law",
+  "Real Estate & Property Law",
+  "Taxation",
+  "Labour & Employment Law",
+  "Technology & E-commerce",
   "Immigration Law",
-  "Labor Law",
 ];
 
 export const locations = [
@@ -33,4 +35,6 @@ export const locations = [
   "Hyderabad",
   "Pune",
   "Ahmedabad",
+  "Jaipur",
+  "Chandigarh",
 ];
