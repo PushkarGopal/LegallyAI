@@ -1,15 +1,32 @@
+'use client';
+
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import AiRecommendationForm from '@/components/ai-recommendation-form';
 import { LawyerCard } from '@/components/lawyer-card';
 import { SearchBar } from '@/components/search-bar';
-import { mockLawyers } from '@/lib/placeholder-data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { Bot, MessageSquare, ShieldCheck } from 'lucide-react';
+import { Bot, MessageSquare, ShieldCheck, Loader2 } from 'lucide-react';
+import { useCollection } from '@/firebase';
+import { collection, query } from 'firebase/firestore';
+import { useFirestore, useMemoFirebase } from '@/firebase/provider';
+import type { Lawyer } from '@/lib/types';
+import Link from 'next/link';
 
 export default function Home() {
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero-image');
+  const firestore = useFirestore();
+
+  const lawyersQuery = useMemoFirebase(
+    () => (firestore ? query(collection(firestore, 'lawyers')) : null),
+    [firestore]
+  );
+  const {
+    data: lawyers,
+    isLoading: lawyersLoading,
+    error: lawyersError,
+  } = useCollection<Lawyer>(lawyersQuery);
 
   const features = [
     {
@@ -38,7 +55,9 @@ export default function Home() {
               Smarter Legal Solutions, Simplified.
             </h1>
             <p className="max-w-[600px] text-lg text-muted-foreground">
-              LegallyAI connects you with expert lawyers using the power of AI. Get instant recommendations, consult in real-time, and hire with confidence.
+              LegallyAI connects you with expert lawyers using the power of AI.
+              Get instant recommendations, consult in real-time, and hire with
+              confidence.
             </p>
             <div className="flex space-x-4">
               <Button size="lg" asChild>
@@ -75,32 +94,43 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {features.map((feature, index) => (
-              <Card key={index} className="flex flex-col items-center p-8 text-center shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <Card
+                key={index}
+                className="flex flex-col items-center p-8 text-center shadow-lg hover:shadow-xl transition-shadow duration-300"
+              >
                 <div className="mb-4 rounded-full bg-accent/20 p-4">
                   {feature.icon}
                 </div>
-                <h3 className="font-headline text-xl font-semibold">{feature.title}</h3>
-                <p className="mt-2 text-muted-foreground">{feature.description}</p>
+                <h3 className="font-headline text-xl font-semibold">
+                  {feature.title}
+                </h3>
+                <p className="mt-2 text-muted-foreground">
+                  {feature.description}
+                </p>
               </Card>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="find-lawyer" className="w-full bg-secondary py-20 md:py-28 scroll-mt-20">
+      <section
+        id="find-lawyer"
+        className="w-full bg-secondary py-20 md:py-28 scroll-mt-20"
+      >
         <div className="container mx-auto max-w-screen-2xl px-4">
           <div className="mb-12 text-center">
             <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl">
               Get an AI-Powered Lawyer Recommendation
             </h2>
             <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
-              Describe your legal needs, and our AI will find the best-matched lawyer from our network of experts.
+              Describe your legal needs, and our AI will find the best-matched
+              lawyer from our network of experts.
             </p>
           </div>
           <AiRecommendationForm />
         </div>
       </section>
-      
+
       <section className="py-20 md:py-28">
         <div className="container mx-auto max-w-screen-2xl px-4">
           <div className="mb-12 text-center">
@@ -113,23 +143,44 @@ export default function Home() {
           </div>
           <SearchBar />
           <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {mockLawyers.map((lawyer) => (
+            {lawyersLoading && (
+              <div className="col-span-full flex justify-center items-center h-40">
+                <Loader2 className="h-12 w-12 animate-spin text-primary" />
+              </div>
+            )}
+            {!lawyersLoading && lawyersError && (
+              <div className="col-span-full text-center text-red-500">
+                Error loading lawyers. Please try again later.
+              </div>
+            )}
+            {!lawyersLoading && !lawyersError && lawyers?.length === 0 && (
+              <div className="col-span-full text-center text-muted-foreground">
+                No lawyers found in our network yet.
+              </div>
+            )}
+            {lawyers?.map(lawyer => (
               <LawyerCard key={lawyer.id} lawyer={lawyer} />
             ))}
           </div>
         </div>
       </section>
 
-      <section id="for-lawyers" className="w-full bg-primary text-primary-foreground py-20 md:py-28 scroll-mt-20">
+      <section
+        id="for-lawyers"
+        className="w-full bg-primary text-primary-foreground py-20 md:py-28 scroll-mt-20"
+      >
         <div className="container mx-auto max-w-screen-2xl px-4 text-center">
           <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">
             Join Our Network of Elite Lawyers
           </h2>
           <p className="mt-4 max-w-2xl mx-auto text-lg text-primary-foreground/80">
-            Expand your practice, connect with new clients, and streamline your workflow on our modern platform.
+            Expand your practice, connect with new clients, and streamline your
+            workflow on our modern platform.
           </p>
           <div className="mt-8">
-            <Button size="lg" variant="secondary">Create Your Profile</Button>
+            <Button size="lg" variant="secondary" asChild>
+              <Link href="/signup">Create Your Profile</Link>
+            </Button>
           </div>
         </div>
       </section>

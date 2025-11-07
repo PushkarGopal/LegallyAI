@@ -1,4 +1,6 @@
-export type Lawyer = {
+import { type DocumentData } from 'firebase/firestore';
+
+export type Lawyer = DocumentData & {
   id: string;
   name: string;
   firm: string;

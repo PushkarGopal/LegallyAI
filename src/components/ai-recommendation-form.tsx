@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -7,15 +8,18 @@ import { z } from 'zod';
 import { Bot, Loader2 } from 'lucide-react';
 import { recommendLawyer } from '@/ai/flows/ai-assisted-lawyer-recommendation';
 import type { AIAssistedLawyerRecommendationOutput } from '@/ai/flows/ai-assisted-lawyer-recommendation';
+import { useCollection } from '@/firebase';
+import { collection, query, where } from 'firebase/firestore';
+import { useFirestore, useMemoFirebase } from '@/firebase/provider';
+import type { Lawyer } from '@/lib/types';
 
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { LawyerCard } from './lawyer-card';
-import { mockLawyers } from '@/lib/placeholder-data';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const industries = ["Technology", "Healthcare", "Finance", "Real Estate", "Retail", "Manufacturing", "Other"];
@@ -32,6 +36,16 @@ export default function AiRecommendationForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [recommendation, setRecommendation] = useState<AIAssistedLawyerRecommendationOutput | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const firestore = useFirestore();
+
+  const lawyerQuery = useMemoFirebase(
+    () => (firestore && recommendation?.lawyerName ? query(collection(firestore, 'lawyers'), where('name', '==', recommendation.lawyerName)) : null),
+    [firestore, recommendation?.lawyerName]
+  );
+  
+  const { data: recommendedLawyerData, isLoading: isLawyerLoading } = useCollection<Lawyer>(lawyerQuery);
+  const recommendedLawyerProfile = recommendedLawyerData?.[0];
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -56,8 +70,6 @@ export default function AiRecommendationForm() {
       setIsLoading(false);
     }
   }
-
-  const recommendedLawyerProfile = mockLawyers.find(l => l.name === recommendation?.lawyerName);
 
   return (
     <div className="grid grid-cols-1 gap-12 md:grid-cols-2 items-start">
@@ -131,7 +143,7 @@ export default function AiRecommendationForm() {
       </Card>
 
       <div className="sticky top-24">
-        {isLoading && (
+        {(isLoading || isLawyerLoading) && !error && (
           <Card>
             <CardContent className="flex flex-col items-center justify-center p-10 space-y-4 text-center">
               <Loader2 className="h-16 w-16 text-primary animate-spin" />
@@ -146,7 +158,7 @@ export default function AiRecommendationForm() {
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
-        {!isLoading && !error && !recommendation && (
+        {!isLoading && !isLawyerLoading && !error && !recommendation && (
           <Card className="flex items-center justify-center min-h-[300px]">
             <CardContent className="flex flex-col items-center justify-center text-center space-y-4 pt-6">
               <Bot className="h-16 w-16 text-primary/50" />
