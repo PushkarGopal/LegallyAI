@@ -32,7 +32,7 @@ export function Header() {
         <Link href="/" className="flex items-center space-x-2 mr-6">
           <Gavel className="h-6 w-6 text-foreground" />
           <span className="font-headline text-xl font-bold text-foreground">
-            Legally<span className="text-accent">AI</span>
+            <span>Legally</span><span className="text-accent">AI</span>
           </span>
         </Link>
         <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
