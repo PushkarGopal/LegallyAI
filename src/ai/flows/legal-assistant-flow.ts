@@ -66,10 +66,10 @@ const legalAssistantPrompt = ai.definePrompt({
 
       User's query: "{{query}}"`,
     
+    model: googleAI.model('gemini-2.5-flash-preview'),
+    
     // Configure the prompt to generate both text and audio
     config: {
-        model: googleAI.model('gemini-2.5-flash-preview'),
-        temperature: 0.5,
         responseModalities: ['TEXT', 'AUDIO'],
         speechConfig: {
             voiceConfig: {
