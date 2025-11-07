@@ -25,12 +25,12 @@ export const expertises = [
 ];
 
 export const locations = [
-  "New York, NY",
-  "Los Angeles, CA",
-  "Chicago, IL",
-  "Houston, TX",
-  "Phoenix, AZ",
-  "Philadelphia, PA",
-  "San Antonio, TX",
-  "San Diego, CA",
+  "Mumbai",
+  "Delhi",
+  "Bengaluru",
+  "Chennai",
+  "Kolkata",
+  "Hyderabad",
+  "Pune",
+  "Ahmedabad",
 ];
