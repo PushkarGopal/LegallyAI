@@ -21,7 +21,8 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t pt-4 text-center text-sm text-muted-foreground">
-          © {new Date().getFullYear()} LegallyAI. All rights reserved.
+          <p className="mb-2">© {new Date().getFullYear()} LegallyAI. All rights reserved.</p>
+          <p>Created by Pushkar Gopal</p>
         </div>
       </div>
     </footer>
