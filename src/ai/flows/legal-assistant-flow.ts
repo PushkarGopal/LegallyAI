@@ -71,7 +71,7 @@ const legalAssistantFlow = ai.defineFlow(
     
     // 1. Generate the text response first.
     const textPromise = ai.generate({
-        prompt: `${legalAssistantTextPrompt}${input.query}"`,
+        prompt: `${legalAssistantTextPrompt}${input.query} according to Indian law"`,
     });
 
     // 2. Generate the audio response in parallel.
