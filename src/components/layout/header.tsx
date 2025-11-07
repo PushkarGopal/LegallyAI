@@ -31,7 +31,7 @@ export function Header() {
       <div className="container flex h-14 max-w-screen-2xl items-center">
         <Link href="/" className="flex items-center space-x-2 mr-6">
           <Gavel className="h-6 w-6 text-foreground" />
-          <span className="font-headline text-xl font-bold text-foreground">LegallyAI</span>
+          <span className="font-headline text-xl font-bold text-foreground">Legally<span className="text-accent">AI</span></span>
         </Link>
         <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
           <Link href="/assistant" className="text-muted-foreground transition-colors hover:text-primary flex items-center">
