@@ -3,7 +3,7 @@ import { Bot, Users, ShieldCheck, Briefcase, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
-const features = [
+const services = [
   {
     icon: <Bot className="h-8 w-8 text-primary" />,
     title: 'AI-Powered Lawyer Matching',
@@ -26,30 +26,30 @@ const features = [
   },
 ];
 
-export default function FeaturesPage() {
+export default function ServicesPage() {
   return (
     <div className="bg-secondary/50">
       <div className="container mx-auto max-w-screen-xl px-4 py-16 sm:py-24">
         <div className="text-center">
           <h1 className="font-headline text-4xl font-bold tracking-tight text-primary sm:text-5xl">
-            Comprehensive Legal Solutions, Powered by AI
+            Our Services
           </h1>
           <p className="mt-6 max-w-2xl mx-auto text-lg text-muted-foreground">
-            We offer a suite of features designed to make finding and working with legal professionals simple, transparent, and efficient.
+            We offer a suite of services designed to make finding and working with legal professionals simple, transparent, and efficient.
           </p>
         </div>
 
         <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-2">
-          {features.map((feature, index) => (
+          {services.map((service, index) => (
             <Card key={index} className="flex flex-col text-center items-center p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
               <div className="mb-5 rounded-full bg-accent/20 p-4">
-                {feature.icon}
+                {service.icon}
               </div>
               <CardHeader className="p-0">
-                <CardTitle className="font-headline text-xl">{feature.title}</CardTitle>
+                <CardTitle className="font-headline text-xl">{service.title}</CardTitle>
               </CardHeader>
               <CardContent className="p-0 mt-2 flex-grow">
-                <p className="text-muted-foreground">{feature.description}</p>
+                <p className="text-muted-foreground">{service.description}</p>
               </CardContent>
             </Card>
           ))}

@@ -33,9 +33,6 @@ export function Header() {
           <span className="font-headline text-xl font-bold text-primary">LegallyAI</span>
         </Link>
         <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
-          <Link href="/features" className="text-muted-foreground transition-colors hover:text-primary">
-            Features
-          </Link>
           <Link href="/#find-lawyer" className="text-muted-foreground transition-colors hover:text-primary">
             Find a Lawyer
           </Link>
