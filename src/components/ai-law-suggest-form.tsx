@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -131,8 +132,8 @@ export default function AiLawSuggestForm() {
                 </h4>
                 <p className="text-sm text-muted-foreground">{result.concludingSolution}</p>
               </div>
-              <Alert variant="destructive" className="bg-yellow-100/50 border-yellow-300 text-yellow-800">
-                <AlertTriangle className="h-4 w-4 !text-yellow-800" />
+              <Alert className="bg-amber-100/60 border-amber-300 text-amber-900 dark:bg-amber-900/20 dark:border-amber-700/50 dark:text-amber-300">
+                <AlertTriangle className="h-4 w-4 !text-amber-500" />
                 <AlertTitle className="font-semibold">Disclaimer</AlertTitle>
                 <AlertDescription>{result.disclaimer}</AlertDescription>
               </Alert>
