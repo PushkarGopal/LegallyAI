@@ -73,7 +73,6 @@ const legalAssistantFlow = ai.defineFlow(
     // 1. Generate the text response first.
     const textResponseResult = await ai.generate({
         prompt: legalAssistantTextPrompt,
-        model: googleAI.model('gemini-1.5-pro-latest'),
         input,
     });
     const textResponse = textResponseResult.text;
