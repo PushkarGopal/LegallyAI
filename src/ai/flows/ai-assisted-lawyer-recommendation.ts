@@ -15,7 +15,8 @@ import {z} from 'genkit';
 import {getDocs, collection, query, where, limit} from 'firebase/firestore';
 import {getSdks} from '@/firebase';
 import type {Lawyer} from '@/lib/types';
-import { initializeFirebase } from '@/firebase';
+import { initializeApp, getApps, getApp } from 'firebase/app';
+import { firebaseConfig } from '@/firebase/config';
 
 // Input schema for the AI-assisted lawyer recommendation flow
 const AIAssistedLawyerRecommendationInputSchema = z.object({
@@ -68,7 +69,8 @@ const findLegalExpert = ai.defineTool(
   },
   async input => {
     // This tool now queries Firestore to find a real lawyer.
-    const { firestore } = initializeFirebase();
+    const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+    const { firestore } = getSdks(app);
     const lawyersRef = collection(firestore, 'lawyers');
     
     // Query for a lawyer with matching expertise.
