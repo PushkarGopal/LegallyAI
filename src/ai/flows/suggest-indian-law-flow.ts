@@ -26,6 +26,7 @@ const SuggestIndianLawOutputSchema = z.object({
     section: z.string().optional().describe("The specific section of the law, if applicable."),
     explanation: z.string().describe("An explanation of why this law is relevant to the dispute."),
   })).describe("A list of relevant laws and explanations."),
+  concludingSolution: z.string().describe("A concluding solution or suggested next steps for the user based on the legal analysis."),
   disclaimer: z.string().describe("A clear disclaimer that this is not legal advice."),
 });
 
@@ -46,6 +47,8 @@ Based on this description, please provide a list of relevant legal suggestions. 
 1. The name of the law or act.
 2. The specific section number, if a clear one applies.
 3. A concise explanation of why this law is relevant to the user's situation.
+
+After providing the legal suggestions, you MUST formulate a "Concluding Solution". This should be a summary of potential next steps for the user, such as consulting a lawyer specializing in the suggested areas, gathering specific documents, or considering mediation. This should be practical and easy to understand for a non-lawyer.
 
 Finally, you MUST provide a disclaimer at the end. The disclaimer must state: "This information is for educational purposes only and does not constitute legal advice. Please consult with a qualified legal professional for advice on your specific situation."
 `,

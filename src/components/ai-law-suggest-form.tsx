@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Bot, Loader2, Scale, AlertTriangle } from 'lucide-react';
+import { Bot, Loader2, Scale, AlertTriangle, Sparkles } from 'lucide-react';
 import { suggestLaw } from '@/ai/flows/suggest-indian-law-flow';
 import type { SuggestIndianLawOutput } from '@/ai/flows/suggest-indian-law-flow';
 
@@ -122,6 +122,14 @@ export default function AiLawSuggestForm() {
                     {index < result.suggestions.length - 1 && <Separator className="mt-4" />}
                   </div>
                 ))}
+              </div>
+              <Separator className="my-6" />
+              <div className="mb-6">
+                <h4 className="flex items-center font-headline text-lg font-semibold mb-2">
+                  <Sparkles className="mr-2 h-5 w-5 text-primary" />
+                  Concluding Solution & Next Steps
+                </h4>
+                <p className="text-sm text-muted-foreground">{result.concludingSolution}</p>
               </div>
               <Alert variant="destructive" className="bg-yellow-100/50 border-yellow-300 text-yellow-800">
                 <AlertTriangle className="h-4 w-4 !text-yellow-800" />
