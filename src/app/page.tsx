@@ -14,6 +14,7 @@ import { collection, query, where } from 'firebase/firestore';
 import { useFirestore, useMemoFirebase } from '@/firebase/provider';
 import type { Lawyer } from '@/lib/types';
 import Link from 'next/link';
+import AiLawSuggestForm from '@/components/ai-law-suggest-form';
 
 export default function Home() {
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero-image');
@@ -156,7 +157,24 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-20 md:py-28">
+      <section
+        id="suggest-law"
+        className="w-full bg-background py-20 md:py-28 scroll-mt-20"
+      >
+        <div className="container mx-auto max-w-screen-2xl px-4">
+          <div className="mb-12 text-center">
+            <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl">
+              Understand Your Legal Standing
+            </h2>
+            <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
+              Describe your legal dispute, and our AI will suggest relevant Indian laws that may apply to your case.
+            </p>
+          </div>
+          <AiLawSuggestForm />
+        </div>
+      </section>
+
+      <section className="py-20 md:py-28 bg-secondary">
         <div className="container mx-auto max-w-screen-2xl px-4">
           <div className="mb-12 text-center">
             <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl">
