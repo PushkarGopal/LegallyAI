@@ -21,7 +21,7 @@ import {
   getFirestore,
 } from 'firebase/firestore';
 import type {Lawyer} from '@/lib/types';
-import {initializeApp, getApps, getApp, deleteApp} from 'firebase/app';
+import {initializeApp, getApps, getApp} from 'firebase/app';
 import {firebaseConfig} from '@/firebase/config';
 
 // Input schema for the AI-assisted lawyer recommendation flow
@@ -40,7 +40,7 @@ export type AIAssistedLawyerRecommendationInput = z.infer<
 
 // Output schema for the AI-assisted lawyer recommendation flow
 const AIAssistedLawyerRecommendationOutputSchema = z.object({
-  lawyerName: z.string().describe('The name of the recommended lawyer.'),
+  lawyerName: z.string().describe('The name of the recommended lawyer. If no specific expert is found, this will be "No Specific Expert Found".'),
   lawFirm: z.string().describe('The law firm the lawyer belongs to.'),
   expertise: z.string().describe("The lawyer's area of expertise."),
   contactInformation: z
@@ -48,7 +48,7 @@ const AIAssistedLawyerRecommendationOutputSchema = z.object({
     .describe("The lawyer's contact information."),
   summary: z
     .string()
-    .describe('A brief summary of why this lawyer is a good fit.'),
+    .describe('A brief summary of why this lawyer is a good fit, or an explanation of why no specific expert could be found.'),
 });
 
 export type AIAssistedLawyerRecommendationOutput = z.infer<
@@ -69,7 +69,7 @@ const findLegalExpert = ai.defineTool(
         ),
     }),
     outputSchema: z.object({
-      lawyerName: z.string().describe('The name of the recommended lawyer.'),
+      lawyerName: z.string().describe('The name of the recommended lawyer. If no specific expert is found, this will be "No Specific Expert Found".'),
       lawFirm: z.string().describe('The law firm the lawyer belongs to.'),
       expertise: z.string().describe("The lawyer's primary area of expertise."),
       contactInformation: z
@@ -80,10 +80,9 @@ const findLegalExpert = ai.defineTool(
     }),
   },
   async input => {
-    // This tool now queries Firestore to find a real lawyer.
     const app = getApps().length
       ? getApp()
-      : initializeApp(firebaseConfig, 'genkit-firebase');
+      : initializeApp(firebaseConfig, 'genkit-firebase-server');
     const firestore = getFirestore(app);
     const lawyersRef = collection(firestore, 'lawyers');
 
@@ -107,26 +106,12 @@ const findLegalExpert = ai.defineTool(
       };
     }
 
-    // Fallback if no specific expertise is found, return the first lawyer.
-    const allLawyersSnap = await getDocs(
-      query(collection(firestore, 'lawyers'), limit(1))
-    );
-    if (!allLawyersSnap.empty) {
-      const lawyerData = allLawyersSnap.docs[0].data() as Lawyer;
-      return {
-        lawyerName: lawyerData.name,
-        lawFirm: lawyerData.firm,
-        expertise: lawyerData.expertise[0] || 'General Practice',
-        contactInformation: 'jane.doe@example.com',
-      };
-    }
-
-    // Final fallback if the database is empty
+    // If no specific expert is found, return a clear indicator.
     return {
-      lawyerName: 'Jane Doe (Placeholder)',
-      lawFirm: 'Doe & Associates',
-      expertise: 'Corporate Law',
-      contactInformation: 'jane.doe@example.com',
+      lawyerName: 'No Specific Expert Found',
+      lawFirm: 'N/A',
+      expertise: 'N/A',
+      contactInformation: 'N/A',
     };
   }
 );
@@ -147,9 +132,14 @@ User's legal situation:
 First, identify the primary area of legal expertise required from the user's description (e.g., "Corporate Law", "Intellectual Property").
 Then, use the findLegalExpert tool to find a suitable lawyer with that expertise.
 
-Finally, generate a concise, encouraging, and professional summary explaining why the recommended lawyer is an excellent match. The summary should be a single paragraph.
+IF the tool returns a lawyer with the name "No Specific Expert Found", it means a specialist for the user's specific need could not be located. In this case, you MUST:
+1. Set the 'lawyerName' output field to "No Specific Expert Found".
+2. Set the 'lawFirm', 'expertise', and 'contactInformation' fields to be "N/A".
+3. For the 'summary' field, generate a helpful message explaining that while no direct match for their specific need was found, they can browse our directory of vetted legal professionals manually. The tone should be encouraging and helpful.
 
-Use the information returned from the tool to populate the output fields.`,
+IF the tool returns a specific lawyer:
+1. Use the information returned from the tool to populate all the output fields.
+2. Generate a concise, encouraging, and professional summary for the 'summary' field, explaining why the recommended lawyer is an excellent match. The summary should be a single paragraph.`,
 });
 
 // Define the flow for AI-assisted lawyer recommendation

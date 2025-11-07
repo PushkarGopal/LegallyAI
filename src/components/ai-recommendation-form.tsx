@@ -39,9 +39,11 @@ export default function AiRecommendationForm() {
 
   const firestore = useFirestore();
 
+  const isPlaceholderRecommendation = recommendation?.lawyerName === 'No Specific Expert Found';
+
   const lawyerQuery = useMemoFirebase(
-    () => (firestore && recommendation?.lawyerName ? query(collection(firestore, 'lawyers'), where('name', '==', recommendation.lawyerName)) : null),
-    [firestore, recommendation?.lawyerName]
+    () => (firestore && recommendation?.lawyerName && !isPlaceholderRecommendation ? query(collection(firestore, 'lawyers'), where('name', '==', recommendation.lawyerName)) : null),
+    [firestore, recommendation?.lawyerName, isPlaceholderRecommendation]
   );
   
   const { data: recommendedLawyerData, isLoading: isLawyerLoading } = useCollection<Lawyer>(lawyerQuery);
@@ -167,7 +169,7 @@ export default function AiRecommendationForm() {
             </CardContent>
           </Card>
         )}
-        {recommendation && recommendedLawyerProfile && (
+        {recommendation && (
           <Card className="bg-accent/10 border-accent animate-in fade-in-50">
             <CardHeader>
               <CardTitle className="font-headline text-2xl">AI-Powered Recommendation</CardTitle>
@@ -175,10 +177,10 @@ export default function AiRecommendationForm() {
             <CardContent>
               <Alert className="mb-4 bg-background">
                 <Bot className="h-4 w-4" />
-                <AlertTitle className="font-semibold">Why this lawyer?</AlertTitle>
+                <AlertTitle className="font-semibold">{isPlaceholderRecommendation ? "Suggestion" : "Why this lawyer?"}</AlertTitle>
                 <AlertDescription>{recommendation.summary}</AlertDescription>
               </Alert>
-              <LawyerCard lawyer={recommendedLawyerProfile} isRecommended />
+              {!isPlaceholderRecommendation && recommendedLawyerProfile && <LawyerCard lawyer={recommendedLawyerProfile} isRecommended />}
             </CardContent>
           </Card>
         )}
