@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import AiRecommendationForm from '@/components/ai-recommendation-form';
@@ -9,7 +10,7 @@ import { SearchBar } from '@/components/search-bar';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Bot, MessageSquare, ShieldCheck, Loader2 } from 'lucide-react';
 import { useCollection } from '@/firebase';
-import { collection, query } from 'firebase/firestore';
+import { collection, query, where } from 'firebase/firestore';
 import { useFirestore, useMemoFirebase } from '@/firebase/provider';
 import type { Lawyer } from '@/lib/types';
 import Link from 'next/link';
@@ -18,15 +19,39 @@ export default function Home() {
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero-image');
   const firestore = useFirestore();
 
-  const lawyersQuery = useMemoFirebase(
-    () => (firestore ? query(collection(firestore, 'lawyers')) : null),
-    [firestore]
-  );
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedExpertise, setSelectedExpertise] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState('');
+
+  const lawyersQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    let q = query(collection(firestore, 'lawyers'));
+    if (selectedExpertise) {
+      q = query(q, where('expertise', 'array-contains', selectedExpertise));
+    }
+    if (selectedLocation) {
+      q = query(q, where('location', '==', selectedLocation));
+    }
+    return q;
+  }, [firestore, selectedExpertise, selectedLocation]);
+
   const {
     data: lawyers,
     isLoading: lawyersLoading,
     error: lawyersError,
   } = useCollection<Lawyer>(lawyersQuery);
+  
+  const filteredLawyers = useMemo(() => {
+    if (!lawyers) return [];
+    if (!searchTerm) return lawyers;
+
+    const lowercasedTerm = searchTerm.toLowerCase();
+    return lawyers.filter(lawyer =>
+      lawyer.name.toLowerCase().includes(lowercasedTerm) ||
+      lawyer.firm.toLowerCase().includes(lowercasedTerm)
+    );
+  }, [lawyers, searchTerm]);
+
 
   const features = [
     {
@@ -141,7 +166,14 @@ export default function Home() {
               Search for lawyers by name, expertise, or location.
             </p>
           </div>
-          <SearchBar />
+          <SearchBar
+            searchTerm={searchTerm}
+            selectedExpertise={selectedExpertise}
+            selectedLocation={selectedLocation}
+            onSearchTermChange={setSearchTerm}
+            onExpertiseChange={setSelectedExpertise}
+            onLocationChange={setSelectedLocation}
+          />
           <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {lawyersLoading && (
               <div className="col-span-full flex justify-center items-center h-40">
@@ -153,12 +185,12 @@ export default function Home() {
                 Error loading lawyers. Please try again later.
               </div>
             )}
-            {!lawyersLoading && !lawyersError && lawyers?.length === 0 && (
+            {!lawyersLoading && !lawyersError && filteredLawyers?.length === 0 && (
               <div className="col-span-full text-center text-muted-foreground">
-                No lawyers found in our network yet.
+                No lawyers found matching your criteria.
               </div>
             )}
-            {lawyers?.map(lawyer => (
+            {filteredLawyers?.map(lawyer => (
               <LawyerCard key={lawyer.id} lawyer={lawyer} />
             ))}
           </div>
