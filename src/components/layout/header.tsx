@@ -40,9 +40,6 @@ export function Header() {
           <Link href="/#for-lawyers" className="text-muted-foreground transition-colors hover:text-primary">
             For Lawyers
           </Link>
-           <Link href="/about" className="text-muted-foreground transition-colors hover:text-primary">
-            About
-          </Link>
         </nav>
         <div className="ml-auto flex items-center space-x-4">
           {isUserLoading ? (
