@@ -12,11 +12,17 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import {getDocs, collection, query, where, limit} from 'firebase/firestore';
-import {getSdks} from '@/firebase';
+import {
+  getDocs,
+  collection,
+  query,
+  where,
+  limit,
+  getFirestore,
+} from 'firebase/firestore';
 import type {Lawyer} from '@/lib/types';
-import { initializeApp, getApps, getApp } from 'firebase/app';
-import { firebaseConfig } from '@/firebase/config';
+import {initializeApp, getApps, getApp, deleteApp} from 'firebase/app';
+import {firebaseConfig} from '@/firebase/config';
 
 // Input schema for the AI-assisted lawyer recommendation flow
 const AIAssistedLawyerRecommendationInputSchema = z.object({
@@ -56,7 +62,11 @@ const findLegalExpert = ai.defineTool(
     description:
       'Finds the most suitable lawyer from the database based on legal needs, industry, and other relevant factors. Prefers lawyers with expertise matching the legal needs.',
     inputSchema: z.object({
-      expertiseQuery: z.string().describe('The area of legal expertise to search for (e.g., "Corporate Law", "Intellectual Property").'),
+      expertiseQuery: z
+        .string()
+        .describe(
+          'The area of legal expertise to search for (e.g., "Corporate Law", "Intellectual Property").'
+        ),
     }),
     outputSchema: z.object({
       lawyerName: z.string().describe('The name of the recommended lawyer.'),
@@ -64,15 +74,19 @@ const findLegalExpert = ai.defineTool(
       expertise: z.string().describe("The lawyer's primary area of expertise."),
       contactInformation: z
         .string()
-        .describe('The lawyer\'s contact information (email or "not available").'),
+        .describe(
+          'The lawyer\'s contact information (email or "not available").'
+        ),
     }),
   },
   async input => {
     // This tool now queries Firestore to find a real lawyer.
-    const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-    const { firestore } = getSdks(app);
+    const app = getApps().length
+      ? getApp()
+      : initializeApp(firebaseConfig, 'genkit-firebase');
+    const firestore = getFirestore(app);
     const lawyersRef = collection(firestore, 'lawyers');
-    
+
     // Query for a lawyer with matching expertise.
     const q = query(
       lawyersRef,
@@ -94,17 +108,18 @@ const findLegalExpert = ai.defineTool(
     }
 
     // Fallback if no specific expertise is found, return the first lawyer.
-    const allLawyersSnap = await getDocs(query(collection(firestore, 'lawyers'), limit(1)));
+    const allLawyersSnap = await getDocs(
+      query(collection(firestore, 'lawyers'), limit(1))
+    );
     if (!allLawyersSnap.empty) {
-        const lawyerData = allLawyersSnap.docs[0].data() as Lawyer;
-        return {
-            lawyerName: lawyerData.name,
-            lawFirm: lawyerData.firm,
-            expertise: lawyerData.expertise[0] || 'General Practice',
-            contactInformation: 'jane.doe@example.com',
-        };
+      const lawyerData = allLawyersSnap.docs[0].data() as Lawyer;
+      return {
+        lawyerName: lawyerData.name,
+        lawFirm: lawyerData.firm,
+        expertise: lawyerData.expertise[0] || 'General Practice',
+        contactInformation: 'jane.doe@example.com',
+      };
     }
-
 
     // Final fallback if the database is empty
     return {
