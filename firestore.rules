@@ -96,9 +96,7 @@ service cloud.firestore {
      */
     match /userProfiles/{profileId} {
       allow get, list: if true;
-      allow create: if isOwner(profileId);
-      allow update: if isOwner(profileId) && resource != null;
-      allow delete: if isOwner(profileId) && resource != null;
+      allow write: if isOwner(profileId);
     }
 
     /**
