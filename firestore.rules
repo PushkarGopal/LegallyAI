@@ -91,12 +91,12 @@ service cloud.firestore {
      * @description Rules for the /userProfiles/{profileId} collection.
      * @path /userProfiles/{profileId}
      * @allow (get, list) Any user can read any user profile.
-     * @deny (create, update, delete) Only admins can create, update or delete profiles.
-     * @principle Allows public read access and admin only write access.
+     * @allow (create, update, delete) The owner of the profile can write to it.
+     * @principle Allows public read access and owner-only write access.
      */
     match /userProfiles/{profileId} {
       allow get, list: if true;
-      allow create, update, delete: if isAdmin();
+      allow write: if isOwner(profileId);
     }
 
     /**
