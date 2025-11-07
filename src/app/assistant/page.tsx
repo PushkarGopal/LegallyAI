@@ -27,17 +27,17 @@ export default function AssistantPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const scrollViewportRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Scroll to bottom when messages change
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTo({
-        top: scrollAreaRef.current.scrollHeight,
-        behavior: 'smooth',
-      });
+    if (scrollViewportRef.current) {
+        setTimeout(() => {
+            scrollViewportRef.current!.style.scrollBehavior = 'smooth';
+            scrollViewportRef.current!.scrollTop = scrollViewportRef.current!.scrollHeight;
+        }, 100);
     }
-  }, [messages]);
+  }, [messages, isLoading]);
   
   const handleSendMessage = async (text: string) => {
     if (!text.trim()) return;
@@ -136,7 +136,7 @@ export default function AssistantPage() {
 
       <Card className="flex-grow flex flex-col overflow-hidden">
         <CardContent className="flex-grow p-0 flex flex-col">
-            <ScrollArea className="flex-grow p-6" ref={scrollAreaRef}>
+            <ScrollArea className="flex-grow p-6" viewportRef={scrollViewportRef}>
                 <div className="space-y-6">
                 {messages.map((message, index) => (
                     <div
