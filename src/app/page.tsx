@@ -112,7 +112,7 @@ export default function Home() {
       <section id="features" className="w-full py-20 md:py-28">
         <div className="container mx-auto max-w-screen-2xl px-4">
           <div className="mb-12 text-center">
-            <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl">
+            <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               Why Choose LegallyAI?
             </h2>
             <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
