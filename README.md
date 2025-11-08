@@ -6,6 +6,6 @@
       alt="LegallyAI logo" 
       style="height:1.2em; vertical-align:-0.3em; margin-left:6px;" 
     />
-    LegallyAI
+    <u>LegallyAI</u>
   </a>
 </h3>
