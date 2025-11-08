@@ -1,1 +1,1 @@
-<h2>Click on this to visit the Next Generation Lawyer Marketplace -> <a href="https://9000-firebase-studio-1762511567381.cluster-aic6jbiihrhmyrqafasatvzbwe.cloudworkstations.dev">LegallyAI</a></h2>
+<h2>Click on this to visit the Next Generation Lawyer Marketplace <img width="512" height="512" alt="image" src="https://github.com/user-attachments/assets/c7ea2ec4-56d1-466f-a15e-beacce326ac3" /><a href="https://9000-firebase-studio-1762511567381.cluster-aic6jbiihrhmyrqafasatvzbwe.cloudworkstations.dev">LegallyAI</a></h2>
