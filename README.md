@@ -4,7 +4,7 @@
     <img 
       src="https://github.com/user-attachments/assets/c7ea2ec4-56d1-466f-a15e-beacce326ac3" 
       alt="LegallyAI logo" 
-      style="height:1.2em; vertical-align:-0.5em; margin-left:6px;" 
+      style="height:1em; vertical-align:-1em; margin-left:6px;" 
     />
     LegallyAI
   </a>
