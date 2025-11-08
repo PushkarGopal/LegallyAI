@@ -1,6 +1,6 @@
 
 import Link from 'next/link';
-import { Gavel } from 'lucide-react';
+import { Gavel, Github } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -11,7 +11,7 @@ export function Footer() {
             <Link href="/" className="flex items-center space-x-2">
               <Gavel className="h-6 w-6 text-foreground" />
               <span className="font-headline text-xl font-bold text-foreground">
-                Legally<span className="text-accent">AI</span>
+                LegallyAI
               </span>
             </Link>
             <p className="mt-2 text-sm text-muted-foreground">The future of legal services is here.</p>
@@ -25,7 +25,13 @@ export function Footer() {
         </div>
         <div className="mt-8 border-t pt-4 text-center text-sm text-muted-foreground">
           <p className="mb-2">© {new Date().getFullYear()} LegallyAI. All rights reserved.</p>
-          <p>Created by Pushkar Gopal</p>
+          <div className="flex items-center justify-center gap-2">
+            <p>Created by Pushkar Gopal</p>
+            <a href="https://github.com/PushkarGopal/LegallyAI" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+              <Github className="h-5 w-5" />
+              <span className="sr-only">GitHub</span>
+            </a>
+          </div>
         </div>
       </div>
     </footer>
